@@ -1,5 +1,5 @@
 import express from "express";
-import { Login, Register } from "../controllers/auth.js";
+import { Login, Register, Logout } from "../controllers/auth.js";
 import validate from "../middleware/valdiate.js";
 import { check } from "express-validator";
 
