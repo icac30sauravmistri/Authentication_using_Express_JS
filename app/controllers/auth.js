@@ -69,7 +69,7 @@ export async function Login(req, res) {
         }
         // if user exists 
         // validate password
-        const isPasswordValid = await bcrypt.password(
+        const isPasswordValid = await bcrypt.compare(
             `${req.body.password}`,
             user.password
         );
@@ -82,7 +82,7 @@ export async function Login(req, res) {
             });
         }
         // return user info except password
-        const { password, ...user_data } = user._doc;
+        const { password, role, ...user_data } = user._doc;
 
         res.status(200).json({
             status: "success",
