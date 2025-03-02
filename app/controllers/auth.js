@@ -81,6 +81,22 @@ export async function Login(req, res) {
                 message: "Invalid email or password. Please try again with the correct/valid credentials.",
             });
         }
+
+        let options = {
+            // generated token would be expired in 10 min
+            maxAge:10*60*1000,
+            // The cookie is only accessible by the web server
+            httpOnly:true,
+            secure: true,
+            sameSite:"None",
+        };
+
+        // generate session token for user
+        const token=user.generateAccessJWT();
+
+        // set the token to response header, so that the client sends it back on each subsequent request
+        res.cookie("SessionID", token, options);
+
         // return user info except password
         const { password, role, ...user_data } = user._doc;
 
