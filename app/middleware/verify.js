@@ -3,53 +3,50 @@ import User from "../models/User.js";
 import jwt from "jsonwebtoken";
 
 export async function Verify(req, res, next) {
-    try {
-        // get the session cookie from request header
-        const authHeader = req.headers["cookie"];
+    // get the session cookie from request header
+    const authHeader = req.headers["cookie"];
 
-        // If there is no cookie from request header, send an unauthorized response.
-        if (!authHeader) {
-            return res.sendStatus(401);
+    // if there is no cookie from request header, send an unauthorized response.
+    if (!authHeader) return res.sendStatus(401);
+
+    // If there is, split the cookie string to get the actual jwt token
+    const cookie = authHeader.split("=")[1];
+    const accessToken = cookie.split(";")[0];
+
+    // Check if that token is blacklisted
+    const checkIfBlacklisted = await Blacklist.findOne({ token: accessToken });
+    // if true, send an unathorized message, asking for a re-authentication.
+    if (checkIfBlacklisted)
+        return res
+            .status(401)
+            .json({ message: "This session has expired. Please login" });
+
+    // if token has not been blacklisted, verify with jwt to see if it has been tampered with or not.
+    // that's like checking the integrity of the accessToken
+    jwt.verify(accessToken, SECRET_ACCESS_TOKEN, async (err, decoded) => {
+        if (err) {
+            // if token has been altered, return a forbidden error
+            return res
+                .status(401)
+                .json({ message: "This session has expired. Please login" });
         }
 
-        // If there is, split the cookie string to get the actual jwt
-        const cookie = authHeader.split("=")[1];
+        // get user id from the decoded token
+        const { id } = decoded;
 
-        // Verify using jwt to see if token has been tampered with or if it has expired.
-        // that's like checking the integrity of the cookie
-        jwt.verify(cookie, config.SECRET_ACCESS_TOKENM, async (err, decoded) => {
-            if (err) {
-                // If token has been altered or has expired, return an unauthorized error
-                return res
-                    .status(401)
-                    .json({
-                        message: "This session has expired, Please login again!",
-                    });
-            }
+        // find user by that `id`
+        const user = await User.findById(id);
 
-            // get user id from the decoded token
-            const { id } = decoded;
+        // return user object but the password
+        const { password, ...data } = user._doc;
 
-            // find user by that `id`
-            const user = await User.findById(id);
+        // put the data object into req.user
+        req.user = data;
 
-            // return user object without the password
-            const { password, ...data } = user._doc;
-
-            // put the data object into req.user
-            req.user = data;
-
-            next();
-        });
-    } catch (err) {
-        res.status(500).json({
-            status: "error",
-            code: 500,
-            data: [],
-            message: "Internal Server Error!",
-        });
-    }
+        next();
+    });
 }
+
 
 export function VerifyRole(req, res, next) {
     try {
