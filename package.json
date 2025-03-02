@@ -1,0 +1,37 @@
+{
+  "name": "authentication_using_express_js",
+  "version": "1.0.0",
+  "description": "authentication using express.js(node.js) and MongoDB",
+  "keywords": [
+    "expressjs",
+    "login",
+    "logout",
+    "nodejs",
+    "javascript"
+  ],
+  "homepage": "https://github.com/icac30sauravmistri/Authentication_using_Express_JS#readme",
+  "bugs": {
+    "url": "https://github.com/icac30sauravmistri/Authentication_using_Express_JS/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/icac30sauravmistri/Authentication_using_Express_JS.git"
+  },
+  "license": "ISC",
+  "author": "SauravMistri",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "start": "node app/index.js",
+    "dev": "nodemon app/index.js",
+    "format": "prettier --write .",
+    "env": "cp .env.example .env",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "express": "^4.21.2"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.22"
+  }
+}
