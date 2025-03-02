@@ -1,11 +1,11 @@
 import express from "express";
-import { Register } from "../controllers/auth.js";
+import { Login, Register } from "../controllers/auth.js";
 import validate from "../middleware/valdiate.js";
 import { check } from "express-validator";
 
 const router = express.Router();
 
-// Register route -- POST request
+// Register route == POST request
 router.post(
     "/register",
     check("email")
@@ -32,4 +32,15 @@ router.post(
     Register
 );
 
+// Login route == POST request
+router.post(
+    "/login",
+    check("email")
+        .isEmail()
+        .withMessage("Enter a valid email address!")
+        .normalizeEmail(),
+    check("password").not().isEmpty(),
+    validate,
+    Login
+);
 export default router;
