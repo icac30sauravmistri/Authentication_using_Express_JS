@@ -4,6 +4,7 @@ import cookieParser from "cookie-parser";
 import mongoose from "mongoose";
 import { PORT, URI } from "./config/index.js";
 import Router from "./routes/index.js";
+import Auth from "./routes/auth.js";
 
 
 
@@ -17,6 +18,7 @@ app.disable("x-powered-by"); //Reduce fingerprinting
 app.use(cookieParser());
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
+app.use('/app/auth', Auth);
 
 // step 2: Connect Database
 // Set up mongoose's promise to global promise
@@ -33,6 +35,7 @@ mongoose
 // step4: Configure Routes ===
 // Connect route handler to app
 Router(app);
+// Auth(app);
 
 // step-5 Start up app
 app.listen(PORT, () => console.log(`app running on http://localhost:${PORT}`));
