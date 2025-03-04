@@ -1,6 +1,7 @@
-import { config } from "dotenv";
 import User from "../models/User.js";
 import jwt from "jsonwebtoken";
+import { SECRET_ACCESS_TOKEN } from "../config/index.js";
+import Blacklist from "../models/Blacklist.js";
 
 export async function Verify(req, res, next) {
     // get the session cookie from request header
